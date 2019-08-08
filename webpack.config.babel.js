@@ -10,6 +10,10 @@ module.exports = env => ({
     path: join(__dirname, 'app')
   },
 
+  devServer: {
+    host: '0.0.0.0'
+  },
+
   watch: false,
 
   node: {

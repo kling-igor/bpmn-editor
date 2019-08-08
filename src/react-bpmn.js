@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import BpmnViewer from 'bpmn-js/lib/Viewer'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
@@ -40,22 +40,17 @@ const PropertiesPanelStyle = styled.div`
   }
 `
 
-// bpmnModeler.saveXML({ format: true }, function(err, xml) {
+// modeler.saveXML({ format: true }, function(err, xml) {
 //   done(err, xml);
 // });
 
-export default class ReactBpmn extends Component {
-  constructor(props) {
-    super(props)
-    this.containerRef = React.createRef()
-    this.propsPanelRef = React.createRef()
-  }
+export default ({ diagramXML }) => {
+  const containerRef = useRef(null)
+  const propsPanelRef = useRef(null)
 
-  componentDidMount() {
-    const container = this.containerRef.current
-
-    this.BpmnModeler = new BpmnModeler({
-      container,
+  useEffect(() => {
+    const modeler = new BpmnModeler({
+      container: containerRef.current,
       propertiesPanel: {
         parent: '#js-properties-panel'
       },
@@ -65,7 +60,7 @@ export default class ReactBpmn extends Component {
       additionalModules: [minimapModule, propertiesPanelModule, propertiesProviderModule]
     })
 
-    this.BpmnModeler.on('import.done', event => {
+    modeler.on('import.done', event => {
       const { error, warnings } = event
 
       if (error) {
@@ -73,71 +68,25 @@ export default class ReactBpmn extends Component {
       }
 
       // access modeler components
-      var canvas = this.BpmnModeler.get('canvas')
+      const canvas = modeler.get('canvas')
       // var overlays = this.BpmnModeler.get('overlays');
 
       canvas.zoom('fit-viewport')
 
-      // return this.handleShown(warnings)
-
       console.log('WARNING:', warnings)
     })
 
-    // this.fetchDiagram(url)
-    this.BpmnModeler.importXML(this.props.diagramXML)
-  }
+    modeler.importXML(diagramXML)
 
-  componentWillUnmount() {
-    this.BpmnModeler.destroy()
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { props, state } = this
-
-    if (props.diagramXML !== prevProps.diagramXML) {
-      return this.BpmnModeler.importXML(props.diagramXML)
+    return () => {
+      modeler.destroy()
     }
-  }
+  }, [diagramXML])
 
-  // fetchDiagram(url) {
-  //   this.handleLoading()
-
-  //   fetch(url)
-  //     .then(response => response.text())
-  //     .then(text => this.setState({ diagramXML: text }))
-  //     .catch(err => this.handleError(err))
-  // }
-
-  // handleLoading() {
-  //   const { onLoading } = this.props
-
-  //   if (onLoading) {
-  //     onLoading()
-  //   }
-  // }
-
-  // handleError(err) {
-  //   const { onError } = this.props
-
-  //   if (onError) {
-  //     onError(err)
-  //   }
-  // }
-
-  // handleShown(warnings) {
-  //   const { onShown } = this.props
-
-  //   if (onShown) {
-  //     onShown(warnings)
-  //   }
-  // }
-
-  render() {
-    return (
-      <>
-        <WorkspaceStyle ref={this.containerRef} />
-        <PropertiesPanelStyle id="js-properties-panel" ref={this.propsPanelRef} />
-      </>
-    )
-  }
+  return (
+    <>
+      <WorkspaceStyle ref={containerRef} />
+      <PropertiesPanelStyle id="js-properties-panel" ref={propsPanelRef} />
+    </>
+  )
 }
