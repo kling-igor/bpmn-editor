@@ -48,7 +48,16 @@ module.exports = env => ({
       },
       {
         test: /\.css$/,
+        include: resolve(__dirname, './node_modules/bpmn-js'),
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: 'file-loader'
+          }
+        ]
       }
     ]
   },

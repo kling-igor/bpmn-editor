@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js'
+import BpmnViewer from 'bpmn-js/lib/Viewer'
+import BpmnModeler from 'bpmn-js/lib/Modeler'
+import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
+import 'bpmn-js/dist/assets/diagram-js.css'
 
 export default class ReactBpmn extends Component {
   constructor(props) {
@@ -10,16 +13,25 @@ export default class ReactBpmn extends Component {
   componentDidMount() {
     const container = this.containerRef.current
 
-    this.bpmnViewer = new BpmnJS({ container })
+    this.BpmnModeler = new BpmnModeler({
+      container,
+      keyboard: {
+        bindTo: window
+      }
+    })
 
-    this.bpmnViewer.on('import.done', event => {
+    this.BpmnModeler.on('import.done', event => {
       const { error, warnings } = event
 
       if (error) {
         console.log('IMPORT ERROR:', error)
       }
 
-      this.bpmnViewer.get('canvas').zoom('fit-viewport')
+      // access modeler components
+      var canvas = this.BpmnModeler.get('canvas')
+      // var overlays = this.BpmnModeler.get('overlays');
+
+      canvas.zoom('fit-viewport')
 
       // return this.handleShown(warnings)
 
@@ -27,18 +39,18 @@ export default class ReactBpmn extends Component {
     })
 
     // this.fetchDiagram(url)
-    this.bpmnViewer.importXML(this.props.diagramXML)
+    this.BpmnModeler.importXML(this.props.diagramXML)
   }
 
   componentWillUnmount() {
-    this.bpmnViewer.destroy()
+    this.BpmnModeler.destroy()
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { props, state } = this
 
     if (props.diagramXML !== prevProps.diagramXML) {
-      return this.bpmnViewer.importXML(props.diagramXML)
+      return this.BpmnModeler.importXML(props.diagramXML)
     }
   }
 
