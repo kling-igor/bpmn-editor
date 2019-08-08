@@ -1,15 +1,54 @@
 import React, { Component } from 'react'
+import styled from 'styled-components'
 import BpmnViewer from 'bpmn-js/lib/Viewer'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import minimapModule from 'diagram-js-minimap'
+import propertiesPanelModule from 'bpmn-js-properties-panel'
+import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
+
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
 import 'diagram-js-minimap/assets/diagram-js-minimap.css'
+import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css'
+
+// const ContentStyle = styled.div`
+//   position: relative;
+//   width: 100%;
+//   height: 100%;
+// `
+
+const WorkspaceStyle = styled.div`
+  width: 100%;
+  height: 100%;
+`
+
+const PropertiesPanelStyle = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 260px;
+  z-index: 10;
+  border-left: 1px solid #ccc;
+  overflow: auto;
+  &:empty {
+    display: none;
+  }
+  > .djs-properties-panel {
+    padding-bottom: 70px;
+    min-height: 100%;
+  }
+`
+
+// bpmnModeler.saveXML({ format: true }, function(err, xml) {
+//   done(err, xml);
+// });
 
 export default class ReactBpmn extends Component {
   constructor(props) {
     super(props)
     this.containerRef = React.createRef()
+    this.propsPanelRef = React.createRef()
   }
 
   componentDidMount() {
@@ -17,10 +56,13 @@ export default class ReactBpmn extends Component {
 
     this.BpmnModeler = new BpmnModeler({
       container,
+      propertiesPanel: {
+        parent: '#js-properties-panel'
+      },
       keyboard: {
         bindTo: window
       },
-      additionalModules: [minimapModule]
+      additionalModules: [minimapModule, propertiesPanelModule, propertiesProviderModule]
     })
 
     this.BpmnModeler.on('import.done', event => {
@@ -91,6 +133,11 @@ export default class ReactBpmn extends Component {
   // }
 
   render() {
-    return <div style={{ width: '100%', height: '100%' }} ref={this.containerRef} />
+    return (
+      <>
+        <WorkspaceStyle ref={this.containerRef} />
+        <PropertiesPanelStyle id="js-properties-panel" ref={this.propsPanelRef} />
+      </>
+    )
   }
 }

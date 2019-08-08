@@ -48,12 +48,11 @@ module.exports = env => ({
       },
       {
         test: /\.css$/,
-        include: resolve(__dirname, './node_modules/bpmn-js'),
-        use: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.css$/,
-        include: resolve(__dirname, './node_modules/diagram-js-minimap'),
+        include: [
+          resolve(__dirname, './node_modules/bpmn-js'),
+          resolve(__dirname, './node_modules/diagram-js-minimap'),
+          resolve(__dirname, './node_modules/bpmn-js-properties-panel')
+        ],
         use: ['style-loader', 'css-loader']
       },
       {
