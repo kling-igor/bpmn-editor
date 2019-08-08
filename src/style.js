@@ -30,4 +30,8 @@ export const GlobalStyle = createGlobalStyle`
   .bjs-container > a {
     display: none;
   }
+
+  .djs-minimap {
+    right: 280px !important;
+  }
 `
