@@ -33,6 +33,7 @@
     "core-js": "^3.0.1",
     "css-loader": "^2.1.0",
     "diagram-js": "^4.0.3",
+    "diagram-js-minimap": "^2.0.1",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^4.2.0",
     "html-webpack-plugin": "^3.2.0",

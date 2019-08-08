@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import BpmnViewer from 'bpmn-js/lib/Viewer'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
+import minimapModule from 'diagram-js-minimap'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
+import 'diagram-js-minimap/assets/diagram-js-minimap.css'
 
 export default class ReactBpmn extends Component {
   constructor(props) {
@@ -17,7 +19,8 @@ export default class ReactBpmn extends Component {
       container,
       keyboard: {
         bindTo: window
-      }
+      },
+      additionalModules: [minimapModule]
     })
 
     this.BpmnModeler.on('import.done', event => {
